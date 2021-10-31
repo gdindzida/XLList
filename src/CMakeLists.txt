@@ -5,7 +5,7 @@ set(HEADER_FILES
         )
 
 set(SOURCE_FILES
-        XLList.cpp
+        main.cpp
         )
 
 set(INCLUDE_FILES

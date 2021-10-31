@@ -1,2 +1,0 @@
-C:\msys64\mingw64\bin\ar.exe qc libXLList_lib.a CMakeFiles/XLList_lib.dir/XLList.cpp.obj
-C:\msys64\mingw64\bin\ranlib.exe libXLList_lib.a
