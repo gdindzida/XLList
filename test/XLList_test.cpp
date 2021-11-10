@@ -6,6 +6,11 @@
 #include "XLList.h"
 #include <stdlib.h>
 #include <time.h>
+#include <algorithm>
+
+// static funcitons
+
+// tests
 
 TEST(xLListTest, testXORFunction) {
     //arrange
@@ -283,4 +288,77 @@ TEST(xLListTest, testFetchingOutOfBounds) {
     ASSERT_FALSE(shouldBeFalseBecauseLessThanZero);
     ASSERT_FALSE(shouldBeFalseBecauseGreaterThanSize);
 }
+
+TEST(xLListTest, testForLoop) {
+    //arrange
+    int numberOfElementsToAdd = 864;
+    //act
+    XLList<int> *list = new XLList<int>();
+    std::vector<int> elements;
+    for (int iter=0;iter<numberOfElementsToAdd;++iter){
+        int elementToAdd = rand()%1000;
+        list->pushBack(elementToAdd);
+        elements.push_back(elementToAdd);
+    }
+    //assert
+    int index = 0;
+    for (auto iter: *list){
+        ASSERT_EQ(elements[index], iter.data);
+        index++;
+    }
+    delete list;
+}
+
+TEST(xLListTest, testGoingBackwards) {
+    //arrange
+    int numberOfElementsToAdd = 864;
+    //act
+    XLList<int> *list = new XLList<int>();
+    std::vector<int> elements;
+    for (int iter=0;iter<numberOfElementsToAdd;++iter){
+        int elementToAdd = rand()%1000;
+        list->pushBack(elementToAdd);
+        elements.push_back(elementToAdd);
+    }
+    XLList<int>::Iterator endIter = list->end();
+    XLList<int>::Iterator beginIter = list->begin();
+    for (int i=0;i<numberOfElementsToAdd;i++){
+        endIter--;
+    }
+    bool isTrue = endIter == beginIter;
+    delete list;
+    //assert
+    ASSERT_TRUE(isTrue);
+}
+
+TEST(xLListTest, testSortingList) {
+    //arrange
+    int numberOfElementsToAdd = 864;
+    //act
+    XLList<int> *list = new XLList<int>();
+    for (int iter=0;iter<numberOfElementsToAdd;++iter){
+        int elementToAdd = rand()%1000;
+        list->pushBack(elementToAdd);
+    }
+
+    bool compareNodes = [](Node<int> firstNode, Node<int> secondNode) {
+        return firstNode.data < secondNode.data;
+    };
+
+    std::sort(list->begin(), list->end(), compareNodes);
+    bool shouldBeTrueIfListIsSorted = true;
+    XLList<int>::Iterator begin = list->begin();
+    XLList<int>::Iterator end = list->end();
+    XLList<int>::Iterator iter = begin;
+    int elementBefore = (*iter).data;
+    iter++;
+    for(;iter<end;++iter){
+        shouldBeTrueIfListIsSorted = elementBefore<=(*iter).data;
+        elementBefore = (*iter).data;
+    }
+    delete list;
+    //assert
+    ASSERT_TRUE(shouldBeTrueIfListIsSorted);
+}
+
 

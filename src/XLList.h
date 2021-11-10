@@ -10,6 +10,21 @@ template<typename DataType>
 struct Node {
     DataType data;
     Node *link;
+
+    Node(){
+        link = nullptr;
+    }
+
+    Node(const Node<DataType>& otherNode) {
+        data = otherNode.data;
+        link = otherNode.link;
+    }
+
+    Node<DataType>& operator=(Node<DataType>&& otherNode) {
+        this->link = otherNode.link;
+        this->data = otherNode.data;
+        return  *this;
+    }
 };
 
 template<typename T>
@@ -26,35 +41,64 @@ public:
     ~XLList();
 
     // Inner class iterator
-    class Iterator {
+class Iterator : public std::iterator<std::random_access_iterator_tag, Node<T>, long int> {
         friend class XLList;
 
     private:
         Node<T> *nodePtrBefore;
         Node<T> *nodePtrCurrent;
+        int index;
 
         Iterator(Node<T> *newNodePtrBefore, Node<T> *newNodePtrCurrent) : nodePtrBefore(newNodePtrBefore),
-                                                                          nodePtrCurrent(newNodePtrCurrent) {};
+                                                                          nodePtrCurrent(newNodePtrCurrent) {
+            index = 0;
+        };
         Node<T> *getNextPointer() const;
 
         Node<T> *getPreviousPointer() const;
 
     public:
+        void setIndex(int newIndex);
+
         Iterator() : nodePtrBefore(nullptr), nodePtrCurrent(nullptr) {};
 
         bool operator!=(const Iterator &comparingIterator) const;
 
         bool operator==(const Iterator &comparingIterator) const;
 
-        T &operator*() const;
+        bool operator<(const Iterator &comparingIterator) const;
 
-        Iterator operator++();
+        bool operator<=(const Iterator &comparingIterator) const;
+
+        bool operator>(const Iterator &comparingIterator) const;
+
+        bool operator>=(const Iterator &comparingIterator) const;
+
+        long int operator+(const Iterator otherIterator);
+
+        long int operator-(const Iterator otherIterator);
+
+        Iterator operator+(const long int difference);
+
+        Iterator & operator+=(const long int &difference);
+
+        Iterator operator-(const long int difference);
+
+        Iterator & operator-=(const long int &difference);
+
+        Node<T> & operator[](const long int &index);
+
+        Node<T> operator*();
+
+        const Iterator &operator++();
 
         Iterator operator++(int);
 
-        Iterator operator--();
+        const Iterator &operator--();
 
         Iterator operator--(int);
+
+        Iterator & operator=(Iterator other);
 
         static Node<T>* xorNodes(Node<T> *first, Node<T> *second);
     };
@@ -96,26 +140,102 @@ XLList<T>::~XLList<T>() {
 
 // Iterator methods
 template<typename T>
+void XLList<T>::Iterator::setIndex(int newIndex){
+    index = newIndex;
+}
+
+template<typename T>
 bool XLList<T>::Iterator::operator!=(const Iterator &comparingIterator) const {
-    return nodePtrBefore !=
-           comparingIterator.nodePtrBefore; // It doesn't matter which one you compare - before or current.
+    return (index!=comparingIterator.index) || (nodePtrCurrent!=comparingIterator.nodePtrCurrent) || (nodePtrBefore!=comparingIterator.nodePtrBefore);
 }
 
 template<typename T>
 bool XLList<T>::Iterator::operator==(const Iterator &comparingIterator) const {
-    return (nodePtrBefore == comparingIterator.nodePtrBefore) && (nodePtrCurrent == comparingIterator.nodePtrCurrent);
+    return (index==comparingIterator.index) & (nodePtrCurrent==comparingIterator.nodePtrCurrent) & (nodePtrBefore==comparingIterator.nodePtrBefore);
 }
 
 template<typename T>
-T &XLList<T>::Iterator::operator*() const {
-    return nodePtrCurrent->data;
+bool XLList<T>::Iterator::operator<(const Iterator &comparingIterator) const {
+    return index<comparingIterator.index;
 }
 
 template<typename T>
-typename XLList<T>::Iterator XLList<T>::Iterator::operator++() {
+bool XLList<T>::Iterator::operator<=(const Iterator &comparingIterator) const {
+    return index<=comparingIterator.index;
+}
+
+template<typename T>
+bool XLList<T>::Iterator::operator>(const Iterator &comparingIterator) const {
+    return index>comparingIterator.index;
+}
+
+template<typename T>
+bool XLList<T>::Iterator::operator>=(const Iterator &comparingIterator) const {
+    return index>=comparingIterator.index;
+}
+
+template<typename T>
+long int XLList<T>::Iterator::operator+(const Iterator otherIterator){
+    return index + otherIterator.index;
+}
+
+template<typename T>
+long int XLList<T>::Iterator::operator-(const Iterator otherIterator){
+    return index - otherIterator.index;
+}
+
+template<typename T>
+typename XLList<T>::Iterator XLList<T>::Iterator::operator+(const long int difference){
+    XLList<T>::Iterator copyIterator(*this);
+    for (int iter=0;iter<difference;iter++) {
+        Node<T> *helperPtr = copyIterator.getNextPointer();
+        copyIterator.nodePtrBefore = copyIterator.nodePtrCurrent;
+        copyIterator.nodePtrCurrent = helperPtr;
+        copyIterator.index++;
+    }
+    return copyIterator;
+
+}
+
+template<typename T>
+typename XLList<T>::Iterator XLList<T>::Iterator::operator-(const long int difference){
+    XLList<T>::Iterator copyIterator = *this;
+    for (int iter=0;iter<difference;iter++) {
+        Node<T> *helperPtr = copyIterator.getPreviousPointer();
+        copyIterator.nodePtrCurrent = copyIterator.nodePtrBefore;
+        copyIterator.nodePtrCurrent = helperPtr;
+        copyIterator.index--;
+    }
+    return copyIterator;
+}
+
+template<typename T>
+typename XLList<T>::Iterator & XLList<T>::Iterator::operator+=(const long int &difference) {
+    return *this + difference;
+}
+
+template<typename T>
+typename XLList<T>::Iterator & XLList<T>::Iterator::operator-=(const long int &difference){
+    return *this - difference;
+}
+
+template<typename T>
+Node<T> & XLList<T>::Iterator::operator[](const long int &index){
+    long int difference = index - this->index;
+    return *(*this+difference);
+}
+
+template<typename T>
+Node<T> XLList<T>::Iterator::operator*(){
+    return *nodePtrCurrent;
+}
+
+template<typename T>
+const typename XLList<T>::Iterator &XLList<T>::Iterator::operator++() {
     Node<T> *tempNode = getNextPointer();
     nodePtrBefore = nodePtrCurrent;
     nodePtrCurrent = tempNode;
+    index++;
     return *this;
 }
 
@@ -125,14 +245,16 @@ typename XLList<T>::Iterator XLList<T>::Iterator::operator++(int) {
     Node<T> *tempNode = getNextPointer();
     nodePtrBefore = nodePtrCurrent;
     nodePtrCurrent = tempNode;
+    index++;
     return temp;
 }
 
 template<typename T>
-typename XLList<T>::Iterator XLList<T>::Iterator::operator--() {
+const typename XLList<T>::Iterator &XLList<T>::Iterator::operator--() {
     Node<T> *tempNode = getPreviousPointer();
     nodePtrCurrent = nodePtrBefore;
     nodePtrBefore = tempNode;
+    index--;
     return *this;
 }
 
@@ -142,7 +264,16 @@ typename XLList<T>::Iterator XLList<T>::Iterator::operator--(int) {
     Node<T> *tempNode = getPreviousPointer();
     nodePtrCurrent = nodePtrBefore;
     nodePtrBefore = tempNode;
+    index--;
     return temp;
+}
+
+template<typename T>
+typename XLList<T>::Iterator & XLList<T>::Iterator::operator=(XLList<T>::Iterator other){
+    this->index = other.index;
+    this->nodePtrCurrent = other.nodePtrCurrent;
+    this->nodePtrBefore = other.nodePtrBefore;
+    return *this;
 }
 
 template<typename T>
@@ -163,12 +294,16 @@ Node<T> *XLList<T>::Iterator::xorNodes(Node<T> *first, Node<T> *second) {
 // Public methods
 template<typename T>
 typename XLList<T>::Iterator XLList<T>::begin() const {
-    return Iterator(head, head->link);
+    XLList<T>::Iterator beginIterator = Iterator(head, head->link);
+    beginIterator.setIndex(-1);
+    return beginIterator;
 }
 
 template<typename T>
 typename XLList<T>::Iterator XLList<T>::end() const {
-    return Iterator(tail, head);
+    XLList<T>::Iterator endIterator = Iterator(tail, head);
+    endIterator.setIndex(size-1);
+    return endIterator;
 }
 
 template<typename T>
@@ -255,7 +390,7 @@ T XLList<T>::getElement(int index) {
         ++listIterator;
         ++currentIndex;
     }
-    return  *listIterator;
+    return  (*listIterator).data;
 }
 
 template<typename T>
