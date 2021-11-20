@@ -332,7 +332,6 @@ TEST(xLListTest, testGoingBackwards) {
 }
 
 TEST(xLListTest, testSortingList) {
-    using std::swap;
     //arrange
     int numberOfElementsToAdd = 10;
     //act

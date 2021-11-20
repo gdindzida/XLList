@@ -11,18 +11,25 @@ struct Node {
     DataType *data;
     Node *link;
 
-    Node(){
+public:
+    Node() {
         data = new DataType;
         link = nullptr;
     }
 
-    Node(const Node<DataType>& otherNode) {
+    Node(const Node<DataType>& otherNode) noexcept {
         data = new DataType;
         *data = *otherNode.data;
         link = otherNode.link;
     }
 
-    ~Node(){
+    Node(const Node<DataType>&& otherNode) noexcept {
+        data = new DataType;
+        *data = *otherNode.data;
+        link = otherNode.link;
+    }
+
+    ~Node() {
         delete data;
     }
 
@@ -32,14 +39,22 @@ struct Node {
         return *this;
     }
 
-    DataType getValue(){
+    DataType getValue() const {
         return *data;
     }
 
     void setValue(DataType newValue) {
         *data = newValue;
     }
+
+    friend void swap(Node<DataType> &firstNode, Node<DataType> &secondNode){
+        DataType tempValue;
+        tempValue = firstNode.getValue();
+        firstNode.setValue(secondNode.getValue());
+        secondNode.setValue(tempValue);
+    }
 };
+
 
 /*namespace std {
     template<class DataType>
@@ -49,16 +64,15 @@ struct Node {
         firstNode.setValue(secondNode.getValue());
         secondNode.setValue(tempValue);
     }
-}*/
-namespace xllist {
-    template<class T>
-    void swap(Node<T> &firstNode, Node<T> &secondNode) {
-        T tempValue;
+
+    template<>
+    void swap(Node<int> &firstNode, Node<int> &secondNode) {
+        int tempValue;
         tempValue = firstNode.getValue();
         firstNode.setValue(secondNode.getValue());
         secondNode.setValue(tempValue);
     }
-}
+}*/
 
 template<typename T>
 class XLList{
@@ -163,13 +177,13 @@ class Iterator : public std::iterator<std::random_access_iterator_tag, Node<T>, 
 
 // Constructors and destructors
 template<typename T>
-XLList<T>::XLList() {
+XLList<T>::XLList(){
     head = tail = new Node<T>();
     size = 0;
 }
 
 template<typename T>
-XLList<T>::~XLList<T>() {
+XLList<T>::~XLList<T>(){
     for (int iter = size-1; iter>=0; iter--){
         removeElement(iter);
     }
