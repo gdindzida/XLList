@@ -303,7 +303,7 @@ TEST(xLListTest, testForLoop) {
     //assert
     int index = 0;
     for (auto iter: *list){
-        ASSERT_EQ(elements[index], iter.data);
+        ASSERT_EQ(elements[index], iter.getValue());
         index++;
     }
     delete list;
@@ -332,29 +332,34 @@ TEST(xLListTest, testGoingBackwards) {
 }
 
 TEST(xLListTest, testSortingList) {
+    using std::swap;
     //arrange
-    int numberOfElementsToAdd = 864;
+    int numberOfElementsToAdd = 10;
     //act
     XLList<int> *list = new XLList<int>();
+    std::vector<int> elements;
     for (int iter=0;iter<numberOfElementsToAdd;++iter){
         int elementToAdd = rand()%1000;
         list->pushBack(elementToAdd);
+        elements.push_back(elementToAdd);
+        std::cout<< elementToAdd<<std::endl;
     }
+    std::cout<< "Sortiram..."<<std::endl;
+    struct NodeComparator {
+        bool operator()(Node<int> firstNode, Node<int> secondNode) { return firstNode.getValue() < secondNode.getValue(); }
+    } nodeComparator;
 
-    bool compareNodes = [](Node<int> firstNode, Node<int> secondNode) {
-        return firstNode.data < secondNode.data;
-    };
 
-    std::sort(list->begin(), list->end(), compareNodes);
-    bool shouldBeTrueIfListIsSorted = true;
     XLList<int>::Iterator begin = list->begin();
     XLList<int>::Iterator end = list->end();
-    XLList<int>::Iterator iter = begin;
-    int elementBefore = (*iter).data;
-    iter++;
-    for(;iter<end;++iter){
-        shouldBeTrueIfListIsSorted = elementBefore<=(*iter).data;
-        elementBefore = (*iter).data;
+    std::sort(begin, end, nodeComparator);
+    std::sort(elements.begin(), elements.end());
+    bool shouldBeTrueIfListIsSorted = true;
+    int index = 0;
+    for (auto iter: *list){
+        std::cout<<iter.getValue()<<" "<<elements[index]<<" "<<(iter.getValue()==elements[index])<<std::endl;
+        shouldBeTrueIfListIsSorted = shouldBeTrueIfListIsSorted && (iter.getValue()==elements[index]);
+        index++;
     }
     delete list;
     //assert
