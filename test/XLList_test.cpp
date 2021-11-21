@@ -25,9 +25,9 @@ TEST(xLListTest, testXORFunction) {
     Node<int> *beforeNodeCalculated = XLList<int>::Iterator::xorNodes(afterNodePtr, linkNode);
     Node<int> *afterNodeCalculated = XLList<int>::Iterator::xorNodes(linkNode, beforeNodePtr);
     //assert
-    ASSERT_EQ(linkNode,linkNodeReverse);
-    ASSERT_EQ(beforeNodePtr,beforeNodeCalculated);
-    ASSERT_EQ(afterNodePtr,afterNodeCalculated);
+    ASSERT_EQ(linkNode, linkNodeReverse);
+    ASSERT_EQ(beforeNodePtr, beforeNodeCalculated);
+    ASSERT_EQ(afterNodePtr, afterNodeCalculated);
 }
 
 TEST(xLListTest, testObjectConstruction) {
@@ -43,8 +43,8 @@ TEST(xLListTest, testObjectConstruction) {
     XLList<int>::Iterator end = list->end();
     delete list;
     //assert
-    ASSERT_EQ(0,afterCreationSize);
-    ASSERT_EQ(96,afterCreationBytes); // should be 24 without debug
+    ASSERT_EQ(0, afterCreationSize);
+    ASSERT_EQ(24, afterCreationBytes);
 }
 
 TEST(xLListTest, testAddingOneElement) {
@@ -59,7 +59,7 @@ TEST(xLListTest, testAddingOneElement) {
     XLList<int>::Iterator end = list->end();
     delete list;
     //assert
-    ASSERT_EQ(1,listSizeAfterAddingOneElement);
+    ASSERT_EQ(1, listSizeAfterAddingOneElement);
     ASSERT_EQ(begin, end);
 }
 
@@ -69,18 +69,18 @@ TEST(xLListTest, testAddingMultipleElementsAtTheEndOfTheList) {
     int numberOfElementsToAdd = 987;
     //act
     XLList<int> *list = new XLList<int>();
-    for (int iter=0;iter<numberOfElementsToAdd;++iter){
+    for (int iter = 0; iter < numberOfElementsToAdd; ++iter) {
         list->pushBack(iter);
     }
     XLList<int>::Iterator begin = list->begin();
-    for (int iter=0;iter<numberOfElementsToAdd;++iter){
+    for (int iter = 0; iter < numberOfElementsToAdd; ++iter) {
         begin++;
     }
     listSizeAfterAddingMultipleElements = list->getSize();
     XLList<int>::Iterator end = list->end();
     delete list;
     //assert
-    ASSERT_EQ(numberOfElementsToAdd,listSizeAfterAddingMultipleElements);
+    ASSERT_EQ(numberOfElementsToAdd, listSizeAfterAddingMultipleElements);
     ASSERT_EQ(begin, end);
 }
 
@@ -90,42 +90,43 @@ TEST(xLListTest, testAddingMultipleElementsAtTheBeginingOfTheList) {
     int numberOfElementsToAdd = 987;
     //act
     XLList<int> *list = new XLList<int>();
-    for (int iter=0;iter<numberOfElementsToAdd;++iter){
+    for (int iter = 0; iter < numberOfElementsToAdd; ++iter) {
         list->pushFront(iter);
     }
     XLList<int>::Iterator begin = list->begin();
-    for (int iter=0;iter<numberOfElementsToAdd;++iter){
+    for (int iter = 0; iter < numberOfElementsToAdd; ++iter) {
         begin++;
     }
     listSizeAfterAddingMultipleElements = list->getSize();
     XLList<int>::Iterator end = list->end();
     delete list;
     //assert
-    ASSERT_EQ(numberOfElementsToAdd,listSizeAfterAddingMultipleElements);
+    ASSERT_EQ(numberOfElementsToAdd, listSizeAfterAddingMultipleElements);
     ASSERT_EQ(begin, end);
 }
+
 TEST(xLListTest, testAddingMultipleElementsInTheMiddleOfTheList) {
     //arrange
     int listSizeAfterAddingMultipleElements = 0;
     int numberOfElementsToAdd = 987;
-    srand (time(NULL));
+    srand(time(NULL));
     //act
     XLList<int> *list = new XLList<int>();
     list->pushBack(-1); // The begining of the list
     list->pushBack(-2); // The end of the list
-    for (int iter=0;iter<numberOfElementsToAdd;++iter){
-        int index = rand() % (list->getSize()-1) + 1;
+    for (int iter = 0; iter < numberOfElementsToAdd; ++iter) {
+        int index = rand() % (list->getSize() - 1) + 1;
         list->addElement(iter, index);
     }
     XLList<int>::Iterator begin = list->begin();
-    for (int iter=0;iter<(numberOfElementsToAdd+2);++iter){
+    for (int iter = 0; iter < (numberOfElementsToAdd + 2); ++iter) {
         begin++;
     }
     listSizeAfterAddingMultipleElements = list->getSize();
     XLList<int>::Iterator end = list->end();
     delete list;
     //assert
-    ASSERT_EQ(numberOfElementsToAdd+2,listSizeAfterAddingMultipleElements);
+    ASSERT_EQ(numberOfElementsToAdd + 2, listSizeAfterAddingMultipleElements);
     ASSERT_EQ(begin, end);
 }
 
@@ -135,10 +136,10 @@ TEST(xLListTest, testRemovingElementsAtTheFrontOfTheList) {
     int numberOfElementsToAdd = 987;
     //act
     XLList<int> *list = new XLList<int>();
-    for (int iter=0;iter<numberOfElementsToAdd;++iter){
+    for (int iter = 0; iter < numberOfElementsToAdd; ++iter) {
         list->pushBack(iter);
     }
-    for (int iter=0;iter<(numberOfElementsToAdd-1);++iter){
+    for (int iter = 0; iter < (numberOfElementsToAdd - 1); ++iter) {
         list->popFront();
     }
     listSizeAfterAddingAndRemovingMultipleElements = list->getSize();
@@ -147,7 +148,7 @@ TEST(xLListTest, testRemovingElementsAtTheFrontOfTheList) {
     XLList<int>::Iterator end = list->end();
     delete list;
     //assert
-    ASSERT_EQ(1,listSizeAfterAddingAndRemovingMultipleElements);
+    ASSERT_EQ(1, listSizeAfterAddingAndRemovingMultipleElements);
     ASSERT_EQ(begin, end);
 }
 
@@ -155,17 +156,17 @@ TEST(xLListTest, testRemovingMultipleElementsInTheMiddleOfTheList) {
     //arrange
     int listSizeAfterAddingAndRemovingMultipleElements = 0;
     int numberOfElementsToAdd = 987;
-    srand (time(NULL));
+    srand(time(NULL));
     //act
     XLList<int> *list = new XLList<int>();
     list->pushBack(-1); // The begining of the list
     list->pushBack(-2); // The end of the list
-    for (int iter=0;iter<numberOfElementsToAdd;++iter){
-        int index = rand() % (list->getSize()-1) + 1;
+    for (int iter = 0; iter < numberOfElementsToAdd; ++iter) {
+        int index = rand() % (list->getSize() - 1) + 1;
         list->addElement(iter, index);
     }
-    for (int iter=0;iter<(numberOfElementsToAdd+1);++iter){
-        int index = rand() % (list->getSize()-1) + 1;
+    for (int iter = 0; iter < (numberOfElementsToAdd + 1); ++iter) {
+        int index = rand() % (list->getSize() - 1) + 1;
         list->removeElement(index);
     }
     XLList<int>::Iterator begin = list->begin();
@@ -174,7 +175,7 @@ TEST(xLListTest, testRemovingMultipleElementsInTheMiddleOfTheList) {
     listSizeAfterAddingAndRemovingMultipleElements = list->getSize();
     delete list;
     //assert
-    ASSERT_EQ(1,listSizeAfterAddingAndRemovingMultipleElements);
+    ASSERT_EQ(1, listSizeAfterAddingAndRemovingMultipleElements);
     ASSERT_EQ(begin, end);
 }
 
@@ -184,10 +185,10 @@ TEST(xLListTest, testRemovingElementsAtTheEndOfTheList) {
     int numberOfElementsToAdd = 987;
     //act
     XLList<int> *list = new XLList<int>();
-    for (int iter=0;iter<numberOfElementsToAdd;++iter){
+    for (int iter = 0; iter < numberOfElementsToAdd; ++iter) {
         list->pushBack(iter);
     }
-    for (int iter=0;iter<(numberOfElementsToAdd-1);++iter){
+    for (int iter = 0; iter < (numberOfElementsToAdd - 1); ++iter) {
         list->popBack();
     }
     listSizeAfterAddingAndRemovingMultipleElements = list->getSize();
@@ -196,7 +197,7 @@ TEST(xLListTest, testRemovingElementsAtTheEndOfTheList) {
     XLList<int>::Iterator end = list->end();
     delete list;
     //assert
-    ASSERT_EQ(1,listSizeAfterAddingAndRemovingMultipleElements);
+    ASSERT_EQ(1, listSizeAfterAddingAndRemovingMultipleElements);
     ASSERT_EQ(begin, end);
 }
 
@@ -205,7 +206,7 @@ TEST(xLListTest, testFetchingElementAtTheFrontOfTheList) {
     int numberOfElementsToAdd = 67;
     //act
     XLList<int> *list = new XLList<int>();
-    for (int iter=0;iter<numberOfElementsToAdd;++iter){
+    for (int iter = 0; iter < numberOfElementsToAdd; ++iter) {
         list->pushBack(iter);
     }
     int frontElement = list->getElement(0);
@@ -219,10 +220,10 @@ TEST(xLListTest, testFetchingElementAtTheEndtOfTheList) {
     int numberOfElementsToAdd = 67;
     //act
     XLList<int> *list = new XLList<int>();
-    for (int iter=0;iter<numberOfElementsToAdd;++iter){
+    for (int iter = 0; iter < numberOfElementsToAdd; ++iter) {
         list->pushBack(iter);
     }
-    int endElement = list->getElement(list->getSize()-1);
+    int endElement = list->getElement(list->getSize() - 1);
     delete list;
     //assert
     ASSERT_EQ(66, endElement);
@@ -233,13 +234,13 @@ TEST(xLListTest, testFetchingElementInTheMiddleOfTheList) {
     int numberOfElementsToAdd = 67;
     //act
     XLList<int> *list = new XLList<int>();
-    for (int iter=0;iter<numberOfElementsToAdd;++iter){
+    for (int iter = 0; iter < numberOfElementsToAdd; ++iter) {
         list->pushBack(iter);
     }
-    int middleElement = list->getElement(numberOfElementsToAdd/2);
+    int middleElement = list->getElement(numberOfElementsToAdd / 2);
     delete list;
     //assert
-    ASSERT_EQ(numberOfElementsToAdd/2, middleElement);
+    ASSERT_EQ(numberOfElementsToAdd / 2, middleElement);
 }
 
 TEST(xLListTest, testAddingOutOfBounds) {
@@ -247,11 +248,11 @@ TEST(xLListTest, testAddingOutOfBounds) {
     int numberOfElementsToAdd = 67;
     //act
     XLList<int> *list = new XLList<int>();
-    for (int iter=0;iter<numberOfElementsToAdd;++iter){
+    for (int iter = 0; iter < numberOfElementsToAdd; ++iter) {
         list->pushBack(iter);
     }
-    bool shouldBeFalseBecauseLessThanZero = list->addElement(13,-1);
-    bool shouldBeFalseBecauseGreaterThanSize = list->addElement(13,numberOfElementsToAdd+1);
+    bool shouldBeFalseBecauseLessThanZero = list->addElement(13, -1);
+    bool shouldBeFalseBecauseGreaterThanSize = list->addElement(13, numberOfElementsToAdd + 1);
     delete list;
     //assert
     ASSERT_FALSE(shouldBeFalseBecauseLessThanZero);
@@ -263,11 +264,11 @@ TEST(xLListTest, testRemovingOutOfBounds) {
     int numberOfElementsToAdd = 67;
     //act
     XLList<int> *list = new XLList<int>();
-    for (int iter=0;iter<numberOfElementsToAdd;++iter){
+    for (int iter = 0; iter < numberOfElementsToAdd; ++iter) {
         list->pushBack(iter);
     }
     bool shouldBeFalseBecauseLessThanZero = list->removeElement(-1);
-    bool shouldBeFalseBecauseGreaterThanSize = list->removeElement(numberOfElementsToAdd+1);
+    bool shouldBeFalseBecauseGreaterThanSize = list->removeElement(numberOfElementsToAdd + 1);
     delete list;
     //assert
     ASSERT_FALSE(shouldBeFalseBecauseLessThanZero);
@@ -279,11 +280,11 @@ TEST(xLListTest, testFetchingOutOfBounds) {
     int numberOfElementsToAdd = 67;
     //act
     XLList<int> *list = new XLList<int>();
-    for (int iter=0;iter<numberOfElementsToAdd;++iter){
+    for (int iter = 0; iter < numberOfElementsToAdd; ++iter) {
         list->pushBack(iter);
     }
     bool shouldBeFalseBecauseLessThanZero = list->getElement(-1);
-    bool shouldBeFalseBecauseGreaterThanSize = list->getElement(numberOfElementsToAdd+1);
+    bool shouldBeFalseBecauseGreaterThanSize = list->getElement(numberOfElementsToAdd + 1);
     delete list;
     //assert
     ASSERT_FALSE(shouldBeFalseBecauseLessThanZero);
@@ -296,14 +297,14 @@ TEST(xLListTest, testForLoop) {
     //act
     XLList<int> *list = new XLList<int>();
     std::vector<int> elements;
-    for (int iter=0;iter<numberOfElementsToAdd;++iter){
-        int elementToAdd = rand()%1000;
+    for (int iter = 0; iter < numberOfElementsToAdd; ++iter) {
+        int elementToAdd = rand() % 1000;
         list->pushBack(elementToAdd);
         elements.push_back(elementToAdd);
     }
     //assert
     int index = 0;
-    for (auto iter: *list){
+    for (auto iter: *list) {
         ASSERT_EQ(elements[index], iter);
         index++;
     }
@@ -317,14 +318,14 @@ TEST(xLListTest, testGoingBackwards) {
     //act
     XLList<int> *list = new XLList<int>();
     std::vector<int> elements;
-    for (int iter=0;iter<numberOfElementsToAdd;++iter){
-        int elementToAdd = rand()%1000;
+    for (int iter = 0; iter < numberOfElementsToAdd; ++iter) {
+        int elementToAdd = rand() % 1000;
         list->pushBack(elementToAdd);
         elements.push_back(elementToAdd);
     }
     XLList<int>::Iterator endIter = list->end();
     XLList<int>::Iterator beginIter = list->begin();
-    for (int i=0;i<numberOfElementsToAdd;i++){
+    for (int i = 0; i < numberOfElementsToAdd; i++) {
         endIter--;
     }
     bool isTrue = endIter == beginIter;
@@ -334,55 +335,43 @@ TEST(xLListTest, testGoingBackwards) {
 }
 
 
-TEST(xLListTest, testBasicIteratorLoop){
+TEST(xLListTest, testBasicIteratorLoop) {
     //arrange
     int numberOfElementsToAdd = 10;
     //act
     XLList<int> *list = new XLList<int>();
     std::vector<int> elements;
-    for (int iter=0;iter<numberOfElementsToAdd;++iter){
-        int elementToAdd = rand()%1000;
+    for (int iter = 0; iter < numberOfElementsToAdd; ++iter) {
+        int elementToAdd = rand() % 1000;
         list->pushBack(elementToAdd);
         elements.push_back(elementToAdd);
-        std::cout<< elementToAdd<<std::endl;
     }
     XLList<int>::Iterator begin = list->begin();
     XLList<int>::Iterator end = list->end();
     XLList<int>::Iterator iter;
-    iter=begin+1;
-    for (;iter!=end;++iter){}
-    ASSERT_EQ(iter,end);
+    for (iter = begin + 1; iter != end; ++iter) {}
+    ASSERT_EQ(iter, end);
 }
 
 TEST(xLListTest, testSortingList) {
     //arrange
-    int numberOfElementsToAdd = 10;
+    int numberOfElementsToAdd = 987;
     //act
     XLList<int> *list = new XLList<int>();
     std::vector<int> elements;
-    int elementsArray[] = {12, 1, 223, 314, 300, 109, 523, 17, 18, 900};
-    for (int iter=0;iter<numberOfElementsToAdd;++iter){
-        //int elementToAdd = rand()%1000;
-        int elementToAdd = elementsArray[iter];
+    for (int iter = 0; iter < numberOfElementsToAdd; ++iter) {
+        int elementToAdd = rand() % 1000;
         list->pushBack(elementToAdd);
         elements.push_back(elementToAdd);
-        std::cout<< elementToAdd<<std::endl;
     }
-    std::cout<< "Sortiram..."<<std::endl;
-    struct NodeComparator {
-        bool operator()(Node<int> firstNode, Node<int> secondNode) { return firstNode.getValue() < secondNode.getValue(); }
-    } nodeComparator;
-
-
     XLList<int>::Iterator begin = list->begin();
     XLList<int>::Iterator end = list->end();
-    std::sort(begin, end);//, nodeComparator);
+    std::sort(begin, end);
     std::sort(elements.begin(), elements.end());
     bool shouldBeTrueIfListIsSorted = true;
     int index = 0;
-    for (auto iter: *list){
-        std::cout<<iter<<" "<<elements[index]<<" "<<(iter==elements[index])<<std::endl;
-        shouldBeTrueIfListIsSorted = shouldBeTrueIfListIsSorted && (iter==elements[index]);
+    for (auto iter: *list) {
+        shouldBeTrueIfListIsSorted = shouldBeTrueIfListIsSorted && (iter == elements[index]);
         index++;
     }
     delete list;
