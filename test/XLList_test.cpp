@@ -304,7 +304,7 @@ TEST(xLListTest, testForLoop) {
     //assert
     int index = 0;
     for (auto iter: *list){
-        ASSERT_EQ(elements[index], iter.getValue());
+        ASSERT_EQ(elements[index], iter);
         index++;
     }
     delete list;
@@ -376,13 +376,13 @@ TEST(xLListTest, testSortingList) {
 
     XLList<int>::Iterator begin = list->begin();
     XLList<int>::Iterator end = list->end();
-    std::sort(begin, end, nodeComparator);
+    std::sort(begin, end);//, nodeComparator);
     std::sort(elements.begin(), elements.end());
     bool shouldBeTrueIfListIsSorted = true;
     int index = 0;
     for (auto iter: *list){
-        std::cout<<iter.getValue()<<" "<<elements[index]<<" "<<(iter.getValue()==elements[index])<<std::endl;
-        shouldBeTrueIfListIsSorted = shouldBeTrueIfListIsSorted && (iter.getValue()==elements[index]);
+        std::cout<<iter<<" "<<elements[index]<<" "<<(iter==elements[index])<<std::endl;
+        shouldBeTrueIfListIsSorted = shouldBeTrueIfListIsSorted && (iter==elements[index]);
         index++;
     }
     delete list;

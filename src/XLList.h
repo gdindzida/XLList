@@ -80,7 +80,7 @@ public:
     ~XLList();
 
     // Inner class iterator
-class Iterator : public std::iterator<std::random_access_iterator_tag, Node<T>, long int> {
+class Iterator : public std::iterator<std::random_access_iterator_tag, T, long int> {
         friend class XLList;
 
     private:
@@ -143,9 +143,9 @@ class Iterator : public std::iterator<std::random_access_iterator_tag, Node<T>, 
 
         Iterator operator-=(const long int &difference);
 
-        Node<T> & operator[](const long int &index);
+        T & operator[](const long int &index);
 
-        Node<T> & operator*() const;
+        T & operator*() const;
 
         const Iterator &operator++();
 
@@ -282,14 +282,14 @@ typename XLList<T>::Iterator XLList<T>::Iterator::operator-=(const long int &dif
 }
 
 template<typename T>
-Node<T> & XLList<T>::Iterator::operator[](const long int &index){
+T & XLList<T>::Iterator::operator[](const long int &index){
     long int difference = index - this->index;
     return *(*this+difference);
 }
 
 template<typename T>
-Node<T> &XLList<T>::Iterator::operator*() const{
-    return *nodePtrCurrent;
+T &XLList<T>::Iterator::operator*() const{
+    return nodePtrCurrent->data;
 }
 
 template<typename T>
@@ -469,7 +469,7 @@ T XLList<T>::getElement(int index) {
         ++listIterator;
         ++currentIndex;
     }
-    return  (*listIterator).getValue();
+    return  *listIterator;
 }
 
 template<typename T>
