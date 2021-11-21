@@ -1,7 +1,7 @@
 # XLList
 This is double linked list with only one pointer in node.
 
-<img title="a title" alt="Alt text" src="./imgs/schema.PNG">
+<img title="list sturcture schema" alt="" src="./imgs/schema.PNG">
 
 Head is special node. It doesn't contain data. It is helper node
 for moving through the list. It's link is direct pointer to the first node.
