@@ -30,7 +30,7 @@ public:
 
     Node<DataType> operator=(const Node<DataType> &otherNode){
         data = otherNode.data;
-        link = otherNode.link;
+        //link = otherNode.link;
         return *this;
     }
 
@@ -40,13 +40,6 @@ public:
 
     void setValue(DataType newValue) {
         data = newValue;
-    }
-
-    friend void swap(Node<DataType> &firstNode, Node<DataType> &secondNode){
-        DataType tempValue;
-        tempValue = firstNode.getValue();
-        firstNode.setValue(secondNode.getValue());
-        secondNode.setValue(tempValue);
     }
 };
 
@@ -75,6 +68,10 @@ private:
     Node<T> *head;
     Node<T> *tail;
     int size;
+    // debug info:
+    std::vector<T> dataVec;
+    std::vector<Node<T>*> linkVec;
+    std::vector<Node<T>*> nodeVec;
 public:
     // Constructors and destructors
     XLList();
@@ -90,6 +87,8 @@ class Iterator : public std::iterator<std::random_access_iterator_tag, Node<T>, 
         Node<T> *nodePtrBefore;
         Node<T> *nodePtrCurrent;
         int index;
+        // deubg info:
+        XLList<T> *xllist;
 
         Node<T> *getNextPointer() const;
 
@@ -104,12 +103,16 @@ class Iterator : public std::iterator<std::random_access_iterator_tag, Node<T>, 
             nodePtrCurrent = otherIterator.nodePtrCurrent;
             nodePtrBefore = otherIterator.nodePtrBefore;
             index = otherIterator.index;
+            // debug info:
+            xllist = otherIterator.xllist;
         }
 
         Iterator(const Iterator &&otherIterator) {
             nodePtrCurrent = otherIterator.nodePtrCurrent;
             nodePtrBefore = otherIterator.nodePtrBefore;
             index = otherIterator.index;
+            // debug info:
+            xllist = otherIterator.xllist;
         }
 
         void initializeParameters(XLList<T> *xLList, int newIndex);
@@ -152,7 +155,12 @@ class Iterator : public std::iterator<std::random_access_iterator_tag, Node<T>, 
 
         Iterator operator--(int);
 
-        Iterator operator=(const Iterator &other);
+        Iterator &operator=(const Iterator &other);
+
+        // dubug info:
+        void setXLList(XLList<T> *xlList) {
+            this->xllist=xlList;
+        }
 
         static Node<T>* xorNodes(Node<T> *first, Node<T> *second);
     };
@@ -323,12 +331,14 @@ typename XLList<T>::Iterator XLList<T>::Iterator::operator--(int) {
 }
 
 template<typename T>
-typename XLList<T>::Iterator XLList<T>::Iterator::operator=(const XLList<T>::Iterator &other){
-    XLList<T>::Iterator temp = *this;
-    temp.index = other.index;
-    temp.nodePtrCurrent = other.nodePtrCurrent;
-    temp.nodePtrBefore = other.nodePtrBefore;
-    return temp;
+typename XLList<T>::Iterator &XLList<T>::Iterator::operator=(const XLList<T>::Iterator &other){
+    this->index = other.index;
+    this->nodePtrCurrent = other.nodePtrCurrent;
+    this->nodePtrBefore = other.nodePtrBefore;
+    // debug info:
+    this->xllist = other.xllist;
+
+    return *this;
 }
 
 template<typename T>
@@ -351,6 +361,8 @@ template<typename T>
 typename XLList<T>::Iterator XLList<T>::begin(){
     XLList<T>::Iterator beginIterator = Iterator(head, head->link);
     beginIterator.initializeParameters(this, 0);
+    //debug info:
+    beginIterator.setXLList(this);
     return (beginIterator);
 }
 
@@ -358,6 +370,8 @@ template<typename T>
 typename XLList<T>::Iterator XLList<T>::end() {
     XLList<T>::Iterator endIterator = Iterator(tail, head);
     endIterator.initializeParameters(this, size);
+    //debug info:
+    endIterator.setXLList(this);
     return (endIterator);
 }
 
@@ -366,6 +380,9 @@ bool XLList<T>::addElement(T newElement, int index) {
     if (index < 0 || index > size) return false;
     Node<T> *newNode = new Node<T>();
     newNode->setValue(newElement);
+    // debug info:
+    dataVec.push_back(newElement);
+    nodeVec.push_back(newNode);
     if (size == 0) {
         newNode->link = Iterator::xorNodes(head, tail);
         head->link = newNode;
@@ -375,7 +392,11 @@ bool XLList<T>::addElement(T newElement, int index) {
             newNode->link = Iterator::xorNodes(tail, head);
             tail->link = Iterator::xorNodes(tail->link, head);
             tail->link = Iterator::xorNodes(tail->link, newNode);
+            //debug info:
+            linkVec[linkVec.size()-1] = tail->link;
+
             tail = newNode;
+
         } else {
             Iterator listIterator = begin();
             int currentIndex = 0;
@@ -395,6 +416,9 @@ bool XLList<T>::addElement(T newElement, int index) {
             listIterator.nodePtrCurrent->link = Iterator::xorNodes(newNode, listIterator.nodePtrCurrent->link);
         }
     }
+    // debug info:
+    linkVec.push_back(newNode->link);
+
     ++size;
     return true;
 }
