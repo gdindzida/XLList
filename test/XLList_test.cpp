@@ -12,6 +12,7 @@
 
 // tests
 
+/*
 TEST(xLListTest, testXORFunction) {
     //arrange
     Node<int> beforeNode;
@@ -309,6 +310,7 @@ TEST(xLListTest, testForLoop) {
     delete list;
 }
 
+
 TEST(xLListTest, testGoingBackwards) {
     //arrange
     int numberOfElementsToAdd = 864;
@@ -330,8 +332,29 @@ TEST(xLListTest, testGoingBackwards) {
     //assert
     ASSERT_TRUE(isTrue);
 }
+*/
 
-TEST(xLListTest, testSortingList) {
+TEST(xLListTest, testBasicIteratorLoop){
+    //arrange
+    int numberOfElementsToAdd = 10;
+    //act
+    XLList<int> *list = new XLList<int>();
+    std::vector<int> elements;
+    for (int iter=0;iter<numberOfElementsToAdd;++iter){
+        int elementToAdd = rand()%1000;
+        list->pushBack(elementToAdd);
+        elements.push_back(elementToAdd);
+        std::cout<< elementToAdd<<std::endl;
+    }
+    XLList<int>::Iterator begin = list->begin();
+    XLList<int>::Iterator end = list->end();
+    XLList<int>::Iterator iter;
+    iter=begin+1;
+    for (;iter!=end;++iter){}
+    ASSERT_EQ(iter,end);
+}
+
+/*TEST(xLListTest, testSortingList) {
     //arrange
     int numberOfElementsToAdd = 10;
     //act
@@ -363,6 +386,6 @@ TEST(xLListTest, testSortingList) {
     delete list;
     //assert
     ASSERT_TRUE(shouldBeTrueIfListIsSorted);
-}
+}*/
 
 

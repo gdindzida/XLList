@@ -8,43 +8,38 @@
 
 template<class DataType>
 struct Node {
-    DataType *data;
+    DataType data;
     Node *link;
 
 public:
     Node() {
-        data = new DataType;
         link = nullptr;
     }
 
     Node(const Node<DataType>& otherNode) noexcept {
-        data = new DataType;
-        *data = *otherNode.data;
+        data = otherNode.data;
         link = otherNode.link;
     }
 
     Node(const Node<DataType>&& otherNode) noexcept {
-        data = new DataType;
-        *data = *otherNode.data;
+        data = otherNode.data;
         link = otherNode.link;
     }
 
-    ~Node() {
-        delete data;
-    }
+    ~Node() {}
 
-    Node<DataType> & operator=(const Node<DataType> &otherNode){
-        *data = *otherNode.data;
+    Node<DataType> operator=(const Node<DataType> &otherNode){
+        data = otherNode.data;
         link = otherNode.link;
         return *this;
     }
 
     DataType getValue() const {
-        return *data;
+        return data;
     }
 
     void setValue(DataType newValue) {
-        *data = newValue;
+        data = newValue;
     }
 
     friend void swap(Node<DataType> &firstNode, Node<DataType> &secondNode){
@@ -110,7 +105,14 @@ class Iterator : public std::iterator<std::random_access_iterator_tag, Node<T>, 
             nodePtrBefore = otherIterator.nodePtrBefore;
             index = otherIterator.index;
         }
-        void setIndex(int newIndex);
+
+        Iterator(const Iterator &&otherIterator) {
+            nodePtrCurrent = otherIterator.nodePtrCurrent;
+            nodePtrBefore = otherIterator.nodePtrBefore;
+            index = otherIterator.index;
+        }
+
+        void initializeParameters(XLList<T> *xLList, int newIndex);
 
         Iterator() : nodePtrBefore(nullptr), nodePtrCurrent(nullptr) {};
 
@@ -140,7 +142,7 @@ class Iterator : public std::iterator<std::random_access_iterator_tag, Node<T>, 
 
         Node<T> & operator[](const long int &index);
 
-        Node<T> operator*() const;
+        Node<T> & operator*() const;
 
         const Iterator &operator++();
 
@@ -150,7 +152,7 @@ class Iterator : public std::iterator<std::random_access_iterator_tag, Node<T>, 
 
         Iterator operator--(int);
 
-        Iterator & operator=(const Iterator &other);
+        Iterator operator=(const Iterator &other);
 
         static Node<T>* xorNodes(Node<T> *first, Node<T> *second);
     };
@@ -159,8 +161,8 @@ class Iterator : public std::iterator<std::random_access_iterator_tag, Node<T>, 
     XLList<T>& operator=(const XLList<T>& other) = delete;
     XLList<T>& operator=(XLList<T>&& other) = delete;
 
-    Iterator begin() const;
-    Iterator end() const;
+    Iterator begin();
+    Iterator end();
     bool addElement(T newElement, int index);
     bool removeElement(int index);
     T getElement(int index);
@@ -192,7 +194,7 @@ XLList<T>::~XLList<T>(){
 
 // Iterator methods
 template<typename T>
-void XLList<T>::Iterator::setIndex(int newIndex){
+void XLList<T>::Iterator::initializeParameters(XLList<T> *xLList, int newIndex){
     index = newIndex;
 }
 
@@ -278,7 +280,7 @@ Node<T> & XLList<T>::Iterator::operator[](const long int &index){
 }
 
 template<typename T>
-Node<T> XLList<T>::Iterator::operator*() const{
+Node<T> &XLList<T>::Iterator::operator*() const{
     return *nodePtrCurrent;
 }
 
@@ -321,11 +323,12 @@ typename XLList<T>::Iterator XLList<T>::Iterator::operator--(int) {
 }
 
 template<typename T>
-typename XLList<T>::Iterator & XLList<T>::Iterator::operator=(const XLList<T>::Iterator &other){
-    this->index = other.index;
-    this->nodePtrCurrent = other.nodePtrCurrent;
-    this->nodePtrBefore = other.nodePtrBefore;
-    return *this;
+typename XLList<T>::Iterator XLList<T>::Iterator::operator=(const XLList<T>::Iterator &other){
+    XLList<T>::Iterator temp = *this;
+    temp.index = other.index;
+    temp.nodePtrCurrent = other.nodePtrCurrent;
+    temp.nodePtrBefore = other.nodePtrBefore;
+    return temp;
 }
 
 template<typename T>
@@ -345,16 +348,16 @@ Node<T> *XLList<T>::Iterator::xorNodes(Node<T> *first, Node<T> *second) {
 
 // Public methods
 template<typename T>
-typename XLList<T>::Iterator XLList<T>::begin() const {
+typename XLList<T>::Iterator XLList<T>::begin(){
     XLList<T>::Iterator beginIterator = Iterator(head, head->link);
-    beginIterator.setIndex(-1);
+    beginIterator.initializeParameters(this, 0);
     return (beginIterator);
 }
 
 template<typename T>
-typename XLList<T>::Iterator XLList<T>::end() const {
+typename XLList<T>::Iterator XLList<T>::end() {
     XLList<T>::Iterator endIterator = Iterator(tail, head);
-    endIterator.setIndex(size-1);
+    endIterator.initializeParameters(this, size);
     return (endIterator);
 }
 
