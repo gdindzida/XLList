@@ -33,6 +33,4 @@ Following rules apply in xor operations:
  - xor(A, NULL) = A
  - xor(A, B) = xor(B, A)
  - xor(xor(A, B), C) = xor(A, xor(B, C))
- - If C = xor(A, B) then: 	xor(C, A) = xor(xor(A, B), A) = xor(xor(B,A), A) 
-xor(C, A) = xor(B, xor(A, A)) = xor(B, NULL) = B 	
-same for xor(C, B) = A.
+ - If C = xor(A, B) then: 	xor(C, A) = xor(xor(A, B), A) = xor(xor(B,A), A) = xor(B, xor(A, A)) = xor(B, NULL) = B same for xor(C, B) = A.
