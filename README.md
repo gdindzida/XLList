@@ -11,8 +11,11 @@ for moving through the list. It's link is direct pointer to the first node.
 Tail is last node in list. It's index is size-1. This is a valid node.
 
 Each LINK is calculated as:
+
 LINK_n = xor(*NODE_n-1, *NODE_n+1)
+
 LINK_0 = xor(*HEAD, *NODE_1)
+
 LINK_size-1 = xor(*NODE_size-2, *HEAD).
 
 **NOTICE**: LINK is of type *NODE.
