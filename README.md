@@ -23,7 +23,7 @@ LINK_size-1 = xor(*NODE_size-2, *HEAD).
   
 
 To move from NODE_n to NODE_n+1 two pointers are used. Pointer to
-NDOE_n-1 and pointer to NODE_n. Then *NODE_n+1 is calculated as:
+NODE_n-1 and pointer to NODE_n. Then *NODE_n+1 is calculated as:
 *NODE_n+1 = xor(*NODE_n-1, LINK_n)
 
   
